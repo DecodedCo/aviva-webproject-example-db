@@ -1,0 +1,171 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Store - SPA Homepage</title>
+    <style>
+        body {
+            font-family: monospace;
+            font-size: 1.2em;
+            margin: 0;
+            padding: 0;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: white;
+            font-size: 2em;
+        }
+
+
+        nav a:hover {
+            text-decoration: underline;
+            text-decoration-color: lawngreen;
+        }
+
+        nav {
+            background-color: rgb(10, 10, 10);
+            color: white;
+            padding: 10px;
+        }
+
+        nav ul {
+            list-style-type: none;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+        }
+
+        nav li {
+            margin-right: 20px;
+        }
+
+        .content {
+            text-align: center;
+            padding: 20px;
+        }
+
+        .game-listing {
+            border: 1px solid lawngreen;
+            padding: 20px;
+            margin: 10px;
+            background-color: lawngreen;
+            box-shadow: 5px 5px 0px black;
+        }
+
+        .game-listing img {
+            max-width: 100%;
+            height: auto;
+        }
+
+        #home-content {
+            display: block;
+        }
+
+        #about-content {
+            display: none;
+        }
+
+        #contact-content {
+            display: none;
+        }
+
+        button {
+            background-color: white;
+            color: black;
+
+            border: none;
+            font-size: 1.2em;
+            font-family: monospace;
+
+            padding: 0.5em;
+            box-shadow: 5px 5px 0px black;
+        }
+
+        button:hover {
+            background-color: black;
+            color: white;
+        }
+    </style>
+</head>
+
+<body>
+    <nav>
+        <ul>
+            <li><a href="#" onclick="showContent('home-content')">Home</a></li>
+            <li><a href="#" onclick="showContent('about-content')">About</a></li>
+            <li><a href="#" onclick="showContent('contact-content')">Contact</a></li>
+        </ul>
+    </nav>
+
+    <div class="content" id="home-content">
+        <h1>Welcome to 90s Game Store</h1>
+        <h2>Featured Games</h2>
+    </div>
+
+    <div class="content" id="about-content">
+        <h1>About Game Store</h1>
+        <p>We are your one-stop shop for the latest and greatest games.</p>
+    </div>
+
+    <div class="content" id="contact-content">
+        <h1>Contact Us</h1>
+        <p>Have questions? Reach out to us at contact@gamestore.com.</p>
+    </div>
+    <script>
+        function addToCart(title, price) {
+            localStorage.setItem(title, price);
+        }
+
+
+        
+    </script>
+    <script type="module">
+        const fetchOptions = {
+            method: 'GET', // or any other HTTP method you are using
+            mode: 'cors', // Set the mode to 'cors' for cross-origin requests
+        }
+
+        const homePage = document.getElementById('home-content');
+        const resp = await fetch('http://localhost:5090/api/games', fetchOptions);
+        const data = await resp.json();
+
+        for (const row of data) {
+            homePage.innerHTML += createListing(
+                row.title, 
+                row.description, 
+                row.price,
+                row.console
+            );
+        }
+
+        function createListing(title, desc, price, console) {
+            const template =
+            `<div class="game-listing">
+                <h3>${title}</h3>
+                <p>${desc}</p>
+                <p>£${price}</p>
+                <p>${console}</p>
+                <button onclick="addToCart('${title}', ${price})">Add to Cart</button>
+            </div>`;
+
+            return template;
+        }
+
+
+        function showContent(id) {
+            const contents = document.querySelectorAll('.content');
+            contents.forEach(content => {
+                if (content.id === id) {
+                    content.style.display = 'block';
+                } else {
+                    content.style.display = 'none';
+                }
+            });
+        }
+    </script>
+</body>
+
+</html>
